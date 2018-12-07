@@ -96,6 +96,7 @@ start() {
     set -e
 
     # set up the anbox network
+    echo ${BRIDGE}
     [ ! -d "/sys/class/net/${BRIDGE}" ] && ip link add dev "${BRIDGE}" type bridge
 
     # if we are run from systemd on a system with selinux enabled,

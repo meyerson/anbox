@@ -1,0 +1,16 @@
+ $ sudo add-apt-repository ppa:morphis/anbox-support
+ $ sudo apt update
+ $ sudo apt install anbox-modules-dkms
+
+```
+ $ sudo modprobe ashmem_linux
+ $ sudo modprobe binder_linux
+```
+
+```
+ $ snap install --devmode --beta anbox
+
+
+ ```
+ $ snap info anbox
+```
