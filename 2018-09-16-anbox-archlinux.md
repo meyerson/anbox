@@ -1,4 +1,19 @@
+---
+layout: post
+title: "anbox inception"
+description: "using adocker to ship anbox
+published: false
+tags: linux android
+---
 # install
+
+
+## build base docker images
+    docker build -it local:base_anbox ./
+
+## host os requirements?
+kernel modules?
+
 
 # use
 
@@ -9,7 +24,7 @@ https://github.com/anbox/anbox/issues/305
 
 
 
-To run in the arch (I used yaourt) I first installed the system kernel headers for the DKMS.
+To run in the arch I first installed the system kernel headers for the DKMS.
 
 "yaourt -s linux-headers" (I found the version compatible with my my kernel - 4.10.12-1-MANJARO)
 Then I compiled the anbox with the following packages:
@@ -66,7 +81,6 @@ docker run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xau
 
 ## sessopm ,
 ## GUI apps on docker
-
 https://medium.com/@SaravSun/running-gui-applications-inside-docker-containers-83d65c0db110
 
 
@@ -100,7 +114,7 @@ root@sd_arch:/anbox/build# anbox session-manager
 reading https://github.com/anbox/anbox/issues/597
 make sure the flag is present -e XDG_RUNTIME_DIR={} arg
 attemped ad-hoc from w/in the container
-root@sd_arch:/anbox/build# export XDG_RUNTIME_DIR=/run/user/1000 # same as hose os?
+root@sd_arch:/anbox/build# export XDG_RUNTIME_DIR=/run/user/1000 # sip same as hose os?
 
 
 ## socket error
@@ -129,3 +143,10 @@ docker run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xau
 # two layer build process
 docker build -t local:base_anbox ./
 docker build -t local:config_anbox -f ./Dockerfile_config ./
+
+
+## to drive this whole thing once done
+http://sikulix.com
+
+## image building bug - seems to be all over the place
+echo N | sudo tee /sys/module/overlay/parameters/metacopy

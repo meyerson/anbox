@@ -37,7 +37,8 @@ RUN apt-get update && apt-get install -y \
         iproute2 \
         iptables \
         kmod \
-        x11-apps
+        x11-apps \
+        software-properties-common
     # apt-get clean
 
 WORKDIR /anbox

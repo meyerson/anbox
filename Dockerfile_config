@@ -1,5 +1,5 @@
 #!/bin/sh
-FROM local:anbox
+FROM local:base_anbox
 
 # VERBOSE=1 make test
 # todo - use wget to get a version controlled android image.
