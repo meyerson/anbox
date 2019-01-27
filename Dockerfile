@@ -78,4 +78,4 @@ WORKDIR /anbox
 #COPY android.img /var/lib/anbox/android.img
 #ENTRYPOINT ["anbox container-manager --daemon --privileged --data-path=/var/lib/anbox"]
 
-#docker run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw"  -v /mnt/store/android_images:/var/lib/anbox/ --privileged  -v /tmp/.X11-unix:/tmp/.X11-unix local:anbox /bin/bash
+#docker run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw"  -v /mnt/store/android_images:/var/lib/anbox/ --privileged  -v /tmp/.X11-unix:/tmp/.X11-unix local:base_anbox /bin/bash

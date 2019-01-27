@@ -11,9 +11,12 @@ VERSION := $(shell git rev-parse HEAD | tr -d '\n'; git diff-index -w --quiet HE
 DOCKER_REGISTRY   := dockerhub
 DOCKER_REPO       := dmeyerson
 DOCKER_NAME       := anbox
+TAG		  		  := base_anbox
 DOCKER_TAG_HASH   := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):$(VERSION)
 DOCKER_TAG_LATEST := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):latest
+DOCKER_TAG  	  := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):$(TAG)
 
+ANDROID_IMAGED_DIR := /mnt/store/android_images
 USER_NAME := scraper
 AWS_PROFILE := default
 # TODO: respect pre-existing env vars
@@ -64,31 +67,8 @@ build: deps envvars
 	docker build \
 		-t $(DOCKER_TAG_HASH) \
 		-t $(DOCKER_TAG_LATEST) \
-		-f docker/Dockerfile .
-
-.PHONY: docs
-docs:
-	mkdir -p docs/build
-	docker run \
-		-v $(PWD)/docs/build:/vb_count/docs/build \
-		-it $(DOCKER_TAG_HASH) /bin/bash \
-			-c "cd docs && make html"
-	@echo See the docs at $(PWD)/docs/build/html/index.html
-
-
-# TODO: super dangerous! bakes creds into image!
-# TODO: work in home directory!
-.PHONY: notebook
-notebook: deps envvars stop build 
-	docker run \
-		-p 8888:8888 \
-		-v $(HOME)/.aws_noprod:/home/$(USER_NAME)/.aws \
-		-e 'AWS_PROFILE=$(AWS_PROFILE)' \
-		-e 'AWS_DEFAULT_PROFILE=$(AWS_PROFILE)' \
-		-v $(PWD)/data:/$(USER_NAME)/data \
-		-v $(PWD)/src:/$(USER_NAME)/src \
-		-it $(DOCKER_TAG_LATEST) \
-		jupyter notebook --ip=0.0.0.0 --port=8888
+		-t $(DOCKER_TAG) \
+		-f Dockerfile .
 
 .PHONY: push
 push: push_git push_latest
@@ -104,24 +84,13 @@ push_latest: build
 .PHONY: shell
 shell: deps envvars stop build
 	docker run \
-		-v $(HOME)/.aws_noprod:/home/$(USER_NAME)/.aws \
-		-v $(PWD)/data:/$(USER_NAME)/data \
-		-v $(PWD)/src:/$(USER_NAME)/src \
-		-e 'AWS_PROFILE=$(AWS_PROFILE)' \
-		-e 'AWS_DEFAULT_PROFILE=$(AWS_PROFILE)' \
 		-it $(DOCKER_TAG_LATEST) \
+		--net=host --env="DISPLAY" \
+		--volume="$HOME/.Xauthority:/root/.Xauthority:rw"  \
+		-v $(ANDROID_IMAGE_DIR):/var/lib/anbox/ \
+		--privileged \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		/bin/bash
-
-.PHONY: dev_run
-dev_run: deps envvars stop
-	docker run \
-		-e 'AWS_PROFILE=$(AWS_PROFILE)' \
-		-e 'AWS_DEFAULT_PROFILE=$(AWS_PROFILE)' \
-		-v $(HOME)/.aws_noprod:/home/$(USER_NAME)/.aws \
-		-v $(PWD)/src:/$(USER_NAME)/src \
-		-v $(PWD)/data:/$(USER_NAME)/data \
-		-it $(DOCKER_TAG_LATEST) \
-		python src/examine_user_metrics.py
 
 .PHONY: test
 test: build stop
