@@ -8,7 +8,7 @@
 DOCKER  := $(shell command -v docker 2> /dev/null)
 VERSION := $(shell git rev-parse HEAD | tr -d '\n'; git diff-index -w --quiet HEAD -- || echo "")
 
-DOCKER_REGISTRY   := dockerhub
+DOCKER_REGISTRY   := registry.hub.docker.com
 DOCKER_REPO       := dmeyerson
 DOCKER_NAME       := anbox
 TAG		  		  := base_anbox
@@ -82,15 +82,27 @@ push_latest: build
 	until docker push $(DOCKER_TAG_LATEST); do docker login $(DOCKER_REGISTRY); done
 
 .PHONY: shell
-shell: deps envvars stop build
-	docker run \
-		-it $(DOCKER_TAG_LATEST) \
-		--net=host --env="DISPLAY" \
-		--volume="$HOME/.Xauthority:/root/.Xauthority:rw"  \
-		-v $(ANDROID_IMAGE_DIR):/var/lib/anbox/ \
-		--privileged \
+shell: deps envvars stop
+	docker run -it \
+		--net=host \
+		--env="DISPLAY" \
+		--volume=$(HOME)/.Xauthority:/root/.Xauthority:rw  \
+		-v /mnt/store/android_images:/var/lib/anbox/ \
+		--privileged  \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		$(DOCKER_TAG_LATEST) \
 		/bin/bash
+
+.PHONY: viz_confirm
+viz_confirm: deps envvars stop
+	docker run -it \
+		--net=host \
+		--env="DISPLAY" \
+		--volume=$(HOME)/.Xauthority:/root/.Xauthority:rw  \
+		--privileged  \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		$(DOCKER_TAG_LATEST) \
+		xeyes
 
 .PHONY: test
 test: build stop

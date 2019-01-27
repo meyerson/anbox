@@ -1,5 +1,5 @@
 #!/bin/sh
-FROM local:base_anbox
+FROM dmeyerson/anbox:latest
 
 # VERBOSE=1 make test
 # todo - use wget to get a version controlled android image.
@@ -21,6 +21,8 @@ anbox session-manager
 # #ip link add dev "${BRIDGE}" type bridge
 # # logs    
 # 12  cat /var/lib/anbox/logs/container.log 
-# 13  cat /var/lib/anbox/logs/console.log 
+cat # 13  cat /var/lib/anbox/logs/console.log 
 
 #mount |grep cgroup
+
+,cpuset,cpu
