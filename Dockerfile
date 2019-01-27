@@ -1,6 +1,8 @@
 #!/bin/sh
 FROM ubuntu:18.04
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update && apt-get install -y \
         build-essential \
         cmake \
@@ -38,7 +40,8 @@ RUN apt-get update && apt-get install -y \
         iptables \
         kmod \
         x11-apps \
-        software-properties-common
+        software-properties-common \
+        libpam-cgfs=3.0.1-0ubuntu1~18.04.2 
     # apt-get clean
 
 WORKDIR /anbox
@@ -68,6 +71,7 @@ RUN VERBOSE=1 make -j10
 RUN VERBOSE=1 make test
 RUN make install 
 ENV ANBOX_LOG_LEVEL='trace'
+WORKDIR /anbox
 #RUN export $(dbus-launch)
 # VERBOSE=1 make test
 # todo - use wget to get a version controlled android image.

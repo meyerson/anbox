@@ -13,7 +13,7 @@ anbox container-manager --daemon --privileged --data-path=/var/lib/anbox
 
 export $(dbus-launch)
 
-./anbox-bridge.sh start
+/anbox/scripts/anbox-bridge.sh start
 
 export XDG_RUNTIME_DIR=/run/user/1000
 anbox session-manager
@@ -22,3 +22,5 @@ anbox session-manager
 # # logs    
 # 12  cat /var/lib/anbox/logs/container.log 
 # 13  cat /var/lib/anbox/logs/console.log 
+
+#mount |grep cgroup

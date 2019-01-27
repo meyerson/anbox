@@ -56,7 +56,7 @@ automatically loaded.
 
 Now you should have two new nodes in your systems `/dev` directory:
 
-```
+```bash
  $ ls -1 /dev/{ashmem,binder}
  /dev/ashmem
  /dev/binder
@@ -119,7 +119,7 @@ from your system. There is no way to bring it back.
 Once the snap is removed you have to remove the installed kernel modules as well:
 
 ```
- $ sudo apt install ppa-purge
+ $ sudo apt install ppa-purgexs
  $ sudo ppa-purge ppa:morphis/anbox-support
 ```
 

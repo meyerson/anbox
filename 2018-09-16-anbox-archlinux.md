@@ -1,4 +1,4 @@
----
+O---
 layout: post
 title: "anbox inception"
 description: "using adocker to ship anbox
@@ -13,9 +13,26 @@ tags: linux android
 
 ## host os requirements?
 kernel modules?
+```bash
+$ pacaur -Sy aur/anbox-modules-dkms-git
+$ sudo modprobe ashmem_linux
+$ sudo modprobe binder_linux
+```
 
+Where does this go? likely Makefile w/ host_prep.sh
+
+## kernel modules on privileged container ?
+https://forums.docker.com/t/consequence-of-installing-kernel-modules-on-the-container/23186
+
+You have to install *exactly* kernel modules that matches the host os's kernel, simpler to drive from the host side . . .
 
 # use
+
+## grab the android image somewhere
+
+```bash
+wget https://build.anbox.io/android-images/2018/06/11/android_amd64.img -O /mnt/store/android_images/android.img
+```
 
 #automation
 
