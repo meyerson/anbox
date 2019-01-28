@@ -11,10 +11,14 @@ VERSION := $(shell git rev-parse HEAD | tr -d '\n'; git diff-index -w --quiet HE
 DOCKER_REGISTRY   := registry.hub.docker.com
 DOCKER_REPO       := dmeyerson
 DOCKER_NAME       := anbox
-TAG		  		  := base_anbox
-DOCKER_TAG_HASH   := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):$(VERSION)
-DOCKER_TAG_LATEST := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):latest
-DOCKER_TAG  	  := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):$(TAG)
+WORKER_NAME		  := anbox_worker
+
+DOCKER_BASE_HASH   := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):$(VERSION)
+DOCKER_BASE_LATEST := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(DOCKER_NAME):latest
+
+DOCKER_WORK_HASH   := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(WORKER_NAME):$(VERSION)
+DOCKER_WORK_LATEST := $(DOCKER_REGISTRY)/$(DOCKER_REPO)/$(WORKER_NAME):latest
+
 
 ANDROID_IMAGED_DIR := /mnt/store/android_images
 USER_NAME := scraper
@@ -62,13 +66,19 @@ help:
 # * * * targets * * * #
 #                     #
 
-.PHONY: build
-build: deps envvars
+.PHONY: build_base
+build_base: deps envvars
 	docker build \
-		-t $(DOCKER_TAG_HASH) \
-		-t $(DOCKER_TAG_LATEST) \
-		-t $(DOCKER_TAG) \
+		-t $(DOCKER_BASE_HASH) \
+		-t $(DOCKER_BASE_LATEST) \
 		-f Dockerfile .
+
+.PHONY: build_worker
+build_worker: deps envvars
+	docker build \
+		-t $(DOCKER_WORK_HASH) \
+		-t $(DOCKER_WORK_LATEST) \
+		-f Dockerfile_worker .
 
 .PHONY: push
 push: push_git push_latest
@@ -81,6 +91,12 @@ push_git: build
 push_latest: build
 	until docker push $(DOCKER_TAG_LATEST); do docker login $(DOCKER_REGISTRY); done
 
+.PHONY: prep_host
+prep_host: 
+	pacaur -Sy aur/anbox-modules-dkms-git
+	sudo modprobe ashmem_linux
+	sudo modprobe binder_linux
+
 .PHONY: shell
 shell: deps envvars stop
 	docker run -it \
@@ -90,8 +106,9 @@ shell: deps envvars stop
 		-v /mnt/store/android_images:/var/lib/anbox/ \
 		--privileged  \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
-		$(DOCKER_TAG_LATEST) \
+		$(DOCKER_WORK_LATEST) \
 		/bin/bash
+
 
 .PHONY: viz_confirm
 viz_confirm: deps envvars stop
@@ -101,7 +118,7 @@ viz_confirm: deps envvars stop
 		--volume=$(HOME)/.Xauthority:/root/.Xauthority:rw  \
 		--privileged  \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
-		$(DOCKER_TAG_LATEST) \
+		$(DOCKER_WORK_LATEST) \
 		xeyes
 
 .PHONY: test

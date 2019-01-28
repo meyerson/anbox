@@ -1,28 +1,28 @@
 #!/bin/sh
 FROM dmeyerson/anbox:latest
-
+CMD start_anbox.sh
 # VERBOSE=1 make test
 # todo - use wget to get a version controlled android image.
 #COPY android.img /var/lib/anbox/android.img
 #ENTRYPOINT ["anbox container-manager --daemon --privileged --data-path=/var/lib/anbox"]
 #export $(dbus-launch)
-service dbus start
+#service dbus start
 
 #run as service
-anbox container-manager --daemon --privileged --data-path=/var/lib/anbox
+#anbox container-manager --daemon --privileged --data-path=/var/lib/anbox
 
-export $(dbus-launch)
+#export $(dbus-launch)
 
-/anbox/scripts/anbox-bridge.sh start
+#/anbox/scripts/anbox-bridge.sh start
 
-export XDG_RUNTIME_DIR=/run/user/1000
-anbox session-manager
+#export XDG_RUNTIME_DIR=/run/user/1000
+#anbox session-manager
 
 # #ip link add dev "${BRIDGE}" type bridge
 # # logs    
 # 12  cat /var/lib/anbox/logs/container.log 
-cat # 13  cat /var/lib/anbox/logs/console.log 
+# 13  cat /var/lib/anbox/logs/console.log 
 
 #mount |grep cgroup
 
-,cpuset,cpu
+#,cpuset,cpu
