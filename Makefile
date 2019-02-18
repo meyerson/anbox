@@ -97,6 +97,17 @@ prep_host:
 	sudo modprobe ashmem_linux
 	sudo modprobe binder_linux
 
+.PHONY: run
+run: deps envvars stop
+	docker run -it \
+		--net=host \
+		--env="DISPLAY" \
+		--volume=$(HOME)/.Xauthority:/root/.Xauthority:rw  \
+		-v /mnt/store/android_images:/var/lib/anbox/ \
+		--privileged  \
+		-v /tmp/.X11-unix:/tmp/.X11-unix \
+		$(DOCKER_WORK_LATEST)
+
 .PHONY: shell
 shell: deps envvars stop
 	docker run -it \

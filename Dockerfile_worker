@@ -1,8 +1,15 @@
-#!/bin/sh
 FROM dmeyerson/anbox:latest
-CMD start_anbox.sh
+COPY start_anbox.sh start_anbox.sh
+ENTRYPOINT ["/anbox/start_anbox.sh"]
+CMD ["ps", "-A"]
+#anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity
+
+
+
+#ps alx | grep pts
+
 # VERBOSE=1 make test
-# todo - use wget to get a version controlled android image.
+# todo - use wget to get a version controlld android image.
 #COPY android.img /var/lib/anbox/android.img
 #ENTRYPOINT ["anbox container-manager --daemon --privileged --data-path=/var/lib/anbox"]
 #export $(dbus-launch)

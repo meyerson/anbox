@@ -19,10 +19,14 @@ $ sudo modprobe ashmem_linux
 $ sudo modprobe binder_linux
 ```
 
+## opengl inside docker?
+https://github.com/jamesbrink/docker-opengl
+https://github.com/thewtex/docker-opengl
+
 Where does this go? likely Makefile w/ host_prep.sh
 
 ## kernel modules on privileged container ?
-https://forums.docker.com/t/consequence-of-installing-kernel-modules-on-the-container/23186
+https://forums.docker.com/t/consequence-of-instaling-kernel-modules-on-the-container/23186
 
 You have to install *exactly* kernel modules that matches the host os's kernel, simpler to drive from the host side . . .
 
