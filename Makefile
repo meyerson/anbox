@@ -98,7 +98,7 @@ prep_host:
 	sudo modprobe binder_linux
 
 .PHONY: run
-run: deps envvars stop
+run: deps envvars stop build_worker
 	docker run -it \
 		--net=host \
 		--env="DISPLAY" \
@@ -109,7 +109,7 @@ run: deps envvars stop
 		$(DOCKER_WORK_LATEST)
 
 .PHONY: shell
-shell: deps envvars stop
+shell: deps envvars stop build_worker
 	docker run -it \
 		--net=host \
 		--env="DISPLAY" \

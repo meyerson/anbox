@@ -2,6 +2,7 @@ FROM dmeyerson/anbox:latest
 COPY start_anbox.sh start_anbox.sh
 ENTRYPOINT ["/anbox/start_anbox.sh"]
 CMD ["ps", "-A"]
+#ps aux | sed -e '1b' -e '/anbox/!d'
 #anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity
 
 
