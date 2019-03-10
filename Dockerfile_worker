@@ -2,29 +2,6 @@ FROM dmeyerson/anbox:latest
 COPY start_anbox.sh start_anbox.sh
 ENTRYPOINT ["/anbox/start_anbox.sh"]
 #CMD ["ps", "-A"] # default command - used if user does not provide one
-#ps aux | sed -e '1b' -e '/anbox/!d'
-#anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity
-
-
-
-#ps alx | grep pts
-
-# VERBOSE=1 make test
-# todo - use wget to get a version controlld android image.
-#COPY android.img /var/lib/anbox/android.img
-#ENTRYPOINT ["anbox container-manager --daemon --privileged --data-path=/var/lib/anbox"]
-#export $(dbus-launch)
-#service dbus start
-
-#run as service
-#anbox container-manager --daemon --privileged --data-path=/var/lib/anbox
-
-#export $(dbus-launch)
-
-#/anbox/scripts/anbox-bridge.sh start
-
-#export XDG_RUNTIME_DIR=/run/user/1000
-#anbox session-manager
 
 # #ip link add dev "${BRIDGE}" type bridge
 # # logs    

@@ -57,7 +57,7 @@ help:
 	@echo '  make notebook - start jupyter notebook server'
 	@echo '  make docs     - generate documentation in the container locally'
 	@echo '  make shell    - open a shell in the container locally'
-	@echo '  make push     - push the built image with git commit hash tag and "latest" to docker repo'
+	@echo '  make push_docker     - push the built image with git commit hash tag and "latest" to docker repo'
 	@echo '  make stop     - stop and remove the local running app container'
 	@echo '  make test     - run python tests'
 	@echo
@@ -74,28 +74,24 @@ build_base: deps envvars
 		-f Dockerfile .
 
 .PHONY: build_worker
-build_worker: deps envvars
+build_worker: deps envvars build_base
 	docker build \
 		-t $(DOCKER_WORK_HASH) \
 		-t $(DOCKER_WORK_LATEST) \
 		-f Dockerfile_worker .
 
-.PHONY: push
-push: push_git push_latest
+.PHONY: push_docker
+push_docker:
+	until docker push $(DOCKER_WORK_LATEST); do docker login $(DOCKER_REGISTRY); done
+	until docker push $(DOCKER_BASE_LATEST); do docker login $(DOCKER_REGISTRY); done
 
-.PHONY: push_git
-push_git: build
-	until docker push $(DOCKER_TAG_HASH); do docker login $(DOCKER_REGISTRY); done
-
-.PHONY: push_latest
-push_latest: build
-	until docker push $(DOCKER_TAG_LATEST); do docker login $(DOCKER_REGISTRY); done
 
 .PHONY: prep_host
 prep_host: 
 	pacaur -Sy aur/anbox-modules-dkms-git
 	sudo modprobe ashmem_linux
 	sudo modprobe binder_linux
+	# TODO - grab android img as needed
 
 .PHONY: run
 run: deps envvars stop build_worker
@@ -107,7 +103,7 @@ run: deps envvars stop build_worker
 		--privileged  \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		$(DOCKER_WORK_LATEST) \
-		sleep infinity
+		/bin/bash  # really hacky :(
 
 .PHONY: shell
 shell: deps envvars stop build_worker
