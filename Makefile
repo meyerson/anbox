@@ -106,7 +106,8 @@ run: deps envvars stop build_worker
 		-v /mnt/store/android_images:/var/lib/anbox/ \
 		--privileged  \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
-		$(DOCKER_WORK_LATEST)
+		$(DOCKER_WORK_LATEST) \
+		sleep infinity
 
 .PHONY: shell
 shell: deps envvars stop build_worker

@@ -1,7 +1,7 @@
 FROM dmeyerson/anbox:latest
 COPY start_anbox.sh start_anbox.sh
 ENTRYPOINT ["/anbox/start_anbox.sh"]
-CMD ["ps", "-A"]
+#CMD ["ps", "-A"] # default command - used if user does not provide one
 #ps aux | sed -e '1b' -e '/anbox/!d'
 #anbox launch --package=org.anbox.appmgr --component=org.anbox.appmgr.AppViewActivity
 
