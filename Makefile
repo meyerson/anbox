@@ -66,6 +66,7 @@ help:
 # * * * targets * * * #
 #                     #
 
+# white space changes will trigger partial rebuilds
 .PHONY: build_base
 build_base: deps envvars
 	docker build \
